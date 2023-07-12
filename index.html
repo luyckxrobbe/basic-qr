@@ -65,14 +65,17 @@
     let qrContainer = document.getElementById("qr");
 
     // Generate the QR code
+    let size = Math.min(window.innerWidth, window.innerHeight);
+
     let qrCode = new QRCode(qrContainer, {
         text: dataToEncode,
-        width: 256,
-        height: 256,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.L
+        width: size,
+        height: size,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
     });
+
 </script>
 </body>
 </html>
