@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.4.0/jsrsasign-all-min.js"></script>
+</head>
+<body>
+<!-- Container for the QR Code -->
+<div id="qr"></div>
+
+<script>
+    function createToken() {
+        var header = { alg: "HS256", typ: "JWT" };
+        var sHeader = JSON.stringify(header);
+
+        var payload = {
+            cardNr: "V002262837",
+            comId: "d6f6b3b0-1476-46a8-bcf4-84dd5f1baf0f",
+            iat: Math.floor(Date.now() / 1000),
+            jti: generateUUID(),
+        };
+        // Printing the payload to the console before signing the JWT
+        console.log(JSON.stringify(payload, null, 2));
+
+        var sPayload = JSON.stringify(payload);
+
+        // Your secret key
+        var sSecret = "secret";
+
+        var sJWT = KJUR.jws.JWS.sign("HS256", sHeader, sPayload, {utf8: sSecret});
+        console.log(sJWT);
+        console.log("gmcode" + sJWT);
+
+        // document.getElementById('output').innerText = sJWT;
+        return "gmcode" + sJWT;
+    }
+
+    function generateUUID() { // Public Domain/MIT
+        var d = new Date().getTime(); //Timestamp
+        var d2 = (performance && performance.now && (performance.now()*1000)) || 0; //Time in microseconds since page-load or 0 if unsupported
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16; //random number between 0 and 16
+            if(d > 0){ //Use timestamp until depleted
+                r = (d + r)%16 | 0;
+                d = Math.floor(d/16);
+            } else { //Use microseconds since page-load if supported
+                r = (d2 + r)%16 | 0;
+                d2 = Math.floor(d2/16);
+            }
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    }
+
+    let dataToEncode = createToken(); // The data you want to encode.
+    let qrContainer = document.getElementById("qr");
+
+    // Generate the QR code
+    let qrCode = new QRCode(qrContainer, {
+        text: dataToEncode,
+        width: 256,
+        height: 256,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.L
+    });
+</script>
+</body>
+</html>
